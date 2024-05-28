@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioNovaTech</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: 
+                linear-gradient(to right, #5bb2b2, #2b8888),
+                url('https://www.transparenttextures.com/patterns/grid-me.png');
+            background-repeat: repeat; /* Asegura que la textura se repita */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-container, .container, .welcome-container {
+            text-align: center;
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .title {
+            font-size: 3em;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .welcome {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            padding: 10px;
+            width: 90%;
+            border: none;
+            border-radius: 5px;
+        }
+        .button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .black-bar {
+            background-color: black;
+            height: 30px;
+            width: 400px;
+            margin: 20px 0;
+        }
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+        }
+        .columns {
+            display: flex;
+            justify-content: space-between;
+            width: 95%;
+            max-width: 2200px;
+            gap: 20px;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 30%;
+        }
+        .additional-info {
+            margin-top: 0;
+            border-left: 2px solid rgb(4, 4, 4);
+            padding-left: 20px;
+        }
+        .registro-item {
+            cursor: pointer;
+            background-color: #fff;
+            color: #000;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .registro-item:hover {
+            background-color: #ccc;
+        }
+        .resultados-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .resultados-text {
+            width: 50%;
+            padding: 20px;
+            text-align: left;
+        }
+        .resultados-chart {
+            width: 50%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* Estilos para pantallas de tamaño 600px y más pequeñas */
+        @media (max-width: 600px) {
+            .resultados-content {
+                flex-direction: column;
+            }
+
+            .resultados-text, .resultados-chart {
+                width: 100%;
+            }
+        }
+        .table-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: black;
+            color: white;
+        }
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+        #register .form-group input, #login .form-group input {
+            padding: 15px;
+            width: 95%;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.5em;
+        }
+        #register .form-group label, #login .form-group label {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        #register .button, #login .button {
+            padding: 20px 40px;
+            font-size: 1.5em;
+        }
+        .resultados-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        /* Estilos adicionales para espaciar el texto del mensaje de bienvenida de los botones */
+        .welcome-message {
+            margin-bottom: 30px; /* Espacio adicional debajo del mensaje de bienvenida */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="main-container active">
+        <div class="title">HOPE</div>
+        <div class="subtitle">Hypothyroidism Prescription Estimator</div>
+        <div class="welcome">Bienvenido/a</div>
+        <div class="buttons">
+            <button class="button" onclick="showSection('register')">Registrarse</button>
+            <button class="button" onclick="showSection('login')">Iniciar Sesión</button>
+        </div>
+    </div>
+
+    <div id="register" class="container">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre">
+        </div>
+        <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido">
+        </div>
+        <div class="form-group">
+            <label for="especialidad">Especialidad</label>
+            <input type="text" id="especialidad">
+        </div>
+        <div class="form-group">
+            <label for="cedula">Cédula</label>
+            <input type="text" id="cedula">
+        </div>
+        <div class="form-group">
+            <label for="TP">Número de tarjeta profesional</label>
+            <input type="text" id="TP">
+        </div>
+        <button class="button" onclick="redirectToLogin()">Registrarse</button>
+    </div>
+
+    <div id="login" class="container">
+        <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario">
+        </div>
+        <div class="form-group">
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena">
+        </div>
+        <button class="button" onclick="showWelcome()">Ingresar</button>
+    </div>
+
+    <div id="welcome" class="welcome-container">
+        <div class="welcome-message">
+            <div class="title">Hola, <span id="user-name"></span></div>
+        </div>
+        <div class="buttons">
+            <button class="button" onclick="showRegistros()">Registros</button>
+            <button class="button" onclick="nuevoRegistro()">Nuevo registro</button>
+        </div>
+    </div>
+
+    <div id="registro-detallado" class="registro-detallado container">
+        <button class="button home-icon" onclick="showSection('welcome')">Volver</button>
+        <div class="columns">
+            <div class="column">
+                <div class="form-group">
+                    <label for="nombre-detalle">Nombre</label>
+                    <input type="text" id="nombre-detalle">
+                </div>
+                <div class="form-group">
+                    <label for="apellido-detalle">Apellido</label>
+                    <input type="text" id="apellido-detalle">
+                </div>
+                <div class="form-group">
+                    <label for="iden-detalle">Número de documento</label>
+                    <input type="text" id="iden-detalle">
+                </div>
+                <div class="form-group">
+                    <label for="edad">Edad (años)</label>
+                    <input type="text" id="edad">
+                </div>
+                <div class="form-group">
+                    <label for="sexo">Sexo (1 si es F o 0 si es M)</label>
+                    <input type="text" id="sexo">
+                </div>
+            </div>
+            <div class="column">
+                <div class="form-group">
+                    <label for="Altura">Altura (m)</label>
+                    <input type="text" id="Altura">
+                </div>
+                <div class="form-group">
+                    <label for="Peso">Peso (Kg)</label>
+                    <input type="text" id="Peso">
+                </div>
+                <div class="form-group">
+                    <label for="tsh">Valor TSH (uUI/mL)</label>
+                    <input type="text" id="tsh">
+                </div>
+                <div class="form-group">
+                    <label for="t4">Valor T4 Libre (ng/dL)</label>
+                    <input type="text" id="t4">
+                </div>
+                <div class="form-group">
+                    <label for="hierro">Suplemento de hierro (1 si toma 0 si no toma)</label>
+                    <input type="text" id="hierro">
+                </div>
+                <div class="form-group">
+                    <label for="multivitaminicos">Multivitamínicos (1 si toma 0 si no toma)</label>
+                    <input type="text" id="multivitaminicos">
+                </div>
+            </div>
+            <div class="column additional-info">
+                <div>Información adicional:</div>
+                <div class="form-group">
+                    <label for="duracion">Duración de Levotiroxina en el cuerpo</label>
+                    <input type="text" id="duracion">
+                </div>
+                <div class="form-group">
+                    <label for="habitos">Hábitos</label>
+                    <input type="text" id="habitos">
+                </div>
+                <div class="form-group">
+                    <label for="intolerancias">Intolerancias/Alergias</label>
+                    <input type="text" id="intolerancias">
+                </div>
+                <button class="button" onclick="saveData()">Calcular</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="registros" class="container">
+        <h1>Registros</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre Completo</th>
+                        <th>Documento de identidad</th>
+                        <th>Dosis actual de levotiroxina (mcg/día)</th>
+                        <th>Última actualización</th>
+                        <th>Último valor de TSH</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-registros">
+                    <!-- Registros se agregarán aquí -->
+                </tbody>
+            </table>
+        </div>
+        <div class="buttons">
+            <button class="button" onclick="showSection('welcome')">Volver</button>
+        </div>
+    </div>
+
+    <div id="resultados" class="container">
+        <h1>Resultados del Registro</h1>
+        <div class="resultados-content">
+            <div id="resultado-detalle" class="resultados-text"></div>
+            <div class="resultados-chart">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <div class="resultados-buttons">
+            <button class="button" onclick="showSection('registros')">Volver</button>
+        </div>
+    </div>
+
+    <div id="dosis" class="container">
+        <h1>Dosis Calculada</h1>
+        <div id="dosis-detalle"></div>
+        <div class="buttons">
+            <button class="button" onclick="guardarDatos()">Guardar</button>
+            <button class="button" onclick="nuevoRegistro()">Nuevo registro</button>
+        </div>
+    </div>
+
+    <script>
+        let userName = '';
+        let registroData = {};
+        let registros = [];
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.main-container, .container, .welcome-container').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function redirectToLogin() {
+            userName = document.getElementById('nombre').value;
+            showSection('login');
+        }
+
+        function showWelcome() {
+            document.getElementById('user-name').textContent = userName;
+            showSection('welcome');
+        }
+
+        function saveData() {
+            const nombre = document.getElementById('nombre-detalle').value;
+            const apellido = document.getElementById('apellido-detalle').value;
+            const iden = document.getElementById('iden-detalle').value;
+            const edad = document.getElementById('edad').value;
+            const sexo = document.getElementById('sexo').value;
+            const altura = document.getElementById('Altura').value;
+            const peso = document.getElementById('Peso').value;
+            const tsh = document.getElementById('tsh').value;
+            const t4 = document.getElementById('t4').value;
+            const hierro = document.getElementById('hierro').value;
+            const multivitaminicos = document.getElementById('multivitaminicos').value;
+            const duracion = document.getElementById('duracion').value;
+            const habitos = document.getElementById('habitos').value;
+            const intolerancias = document.getElementById('intolerancias').value;
+
+            const BMI = peso / (altura * altura);
+            const dosis = 8 * (Math.exp(2.02 + 0.05*t4 + 0.01 * peso - 0.0037 * edad - 0.098 * sexo - 0.01 * BMI + 0.007 * tsh + 0.108 * hierro - 0.014 * multivitaminicos));
+            const fecha = new Date().toLocaleDateString();
+
+            registroData = {
+                nombre,
+                apellido,
+                iden,
+                edad,
+                sexo,
+                altura,
+                peso,
+                tsh,
+                t4,
+                hierro,
+                multivitaminicos,
+                duracion,
+                habitos,
+                intolerancias,
+                dosis: dosis.toFixed(2),
+                fecha
+            };
+
+            registros.push({ ...registroData });
+
+            mostrarDosis();
+        }
+
+        function mostrarDosis() {
+            const dosisDetalle = document.getElementById('dosis-detalle');
+            dosisDetalle.innerHTML = `
+                <p>La dosis para <strong>${registroData.nombre} ${registroData.apellido}</strong> es de <strong>${registroData.dosis} mcg/día</strong>.</p>
+            `;
+            showSection('dosis');
+        }
+
+        function crearGrafica() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            
+            if (window.myChart instanceof Chart) {
+                window.myChart.destroy();
+            }
+
+            const years = Array.from({ length: 9 }, (_, i) => 2016 + i);
+            const dosisValues = Array.from({ length: 8 }, () => (Math.random() * 100).toFixed(2));
+            dosisValues.push(registroData.dosis);
+
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [...years, 2024],
+                    datasets: [{
+                        label: 'Dosis de Levotiroxina (mcg/día)',
+                        data: dosisValues,
+                        borderColor: 'rgba(0,0,0,1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Dosis de Levotiroxina (mcg/día)',
+                                color: 'white'
+                            },
+                            ticks: {
+                                color: 'white'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tiempo (años)',
+                                color: 'white'
+                            },
+                            ticks: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Progreso de la dosis de levotiroxina del paciente',
+                            color: 'white',
+                            font: {
+                                size: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function guardarDatos() {
+            alert('Datos guardados');
+            showRegistros();
+        }
+
+        function nuevoRegistro() {
+            document.querySelectorAll('#registro-detallado input').forEach(input => input.value = '');
+            showSection('registro-detallado');
+        }
+
+        function showRegistros() {
+            const listaRegistros = document.getElementById('lista-registros');
+            listaRegistros.innerHTML = '';
+
+            registros.forEach((registro, index) => {
+                const item = document.createElement('tr');
+                item.classList.add('registro-item');
+                item.innerHTML = `
+                    <td>${registro.nombre} ${registro.apellido}</td>
+                    <td>${registro.iden}</td>
+                    <td>${registro.dosis}</td>
+                    <td>${registro.fecha}</td>
+                    <td>${registro.tsh}</td>
+                `;
+                item.onclick = () => cargarRegistro(index);
+                listaRegistros.appendChild(item);
+            });
+
+            showSection('registros');
+        }
+
+        function cargarRegistro(index) {
+            registroData = registros[index];
+
+            document.getElementById('nombre-detalle').value = registroData.nombre;
+            document.getElementById('apellido-detalle').value = registroData.apellido;
+            document.getElementById('iden-detalle').value = registroData.iden;
+            document.getElementById('edad').value = registroData.edad;
+            document.getElementById('sexo').value = registroData.sexo;
+            document.getElementById('Altura').value = registroData.altura;
+            document.getElementById('Peso').value = registroData.peso;
+            document.getElementById('tsh').value = registroData.tsh;
+            document.getElementById('t4').value = registroData.t4;
+            document.getElementById('hierro').value = registroData.hierro;
+            document.getElementById('multivitaminicos').value = registroData.multivitaminicos;
+            document.getElementById('duracion').value = registroData.duracion;
+            document.getElementById('habitos').value = registroData.habitos;
+            document.getElementById('intolerancias').value = registroData.intolerancias;
+
+            mostrarResultados();
+        }
+
+        function mostrarResultados() {
+            const resultadoDetalle = document.getElementById('resultado-detalle');
+            resultadoDetalle.innerHTML = `
+                <p><strong>Nombre:</strong> ${registroData.nombre}</p>
+                <p><strong>Apellido:</strong> ${registroData.apellido}</p>
+                <p><strong>Número de documento:</strong> ${registroData.iden}</p>
+                <p><strong>Edad:</strong> ${registroData.edad}</p>
+                <p><strong>Sexo:</strong> ${registroData.sexo}</p>
+                <p><strong>Altura:</strong> ${registroData.altura}</p>
+                <p><strong>Peso:</strong> ${registroData.peso}</p>
+                <p><strong>Valor TSH (uUI/mL):</strong> ${registroData.tsh}</p>
+                <p><strong>Valor T4 Libre (ng/dL):</strong> ${registroData.t4}</p>
+                <p><strong>Suplemento de hierro:</strong> ${registroData.hierro}</p>
+                <p><strong>Multivitamínicos:</strong> ${registroData.multivitaminicos}</p>
+                <p><strong>Duración de Levotiroxina en el cuerpo:</strong> ${registroData.duracion}</p>
+                <p><strong>Hábitos:</strong> ${registroData.habitos}</p>
+                <p><strong>Intolerancias/Alergias:</strong> ${registroData.intolerancias}</p>
+                <p><strong>Dosis calculada de Levotiroxina:</strong> ${registroData.dosis} mcg/día</p>
+                <p><strong>Fecha de cálculo:</strong> ${registroData.fecha}</p>
+            `;
+
+            crearGrafica();
+            showSection('resultados');
+        }
+    </script>
+</body>
+</html>
